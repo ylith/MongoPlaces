@@ -5,8 +5,11 @@ use Framework\Persistence\AbstractMongoRepository;
 
 class MapRepository extends AbstractMongoRepository
 {
-	public function readMap()
+
+	public function setOptions()
 	{
-		return $this->findBy();
+		return array(
+			'collectionName' => 'map',
+		);
 	}
 }

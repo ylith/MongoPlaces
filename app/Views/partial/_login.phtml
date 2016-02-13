@@ -1,17 +1,24 @@
-<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  <div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Login to Your Account</h1><br>
-  				<form role="form" method="POST" id="login-form" onsubmit="login.submitCreateForm(this); return false;">
-					<div class="form-group">
-						<input type="email" name="email" placeholder="Email">
-						<input type="password" name="password" placeholder="Password">
-						<button type="button" class="btn btn-primary" onclick="$('#login-form').submit()">Login</button>
-					</div>
-				  </form>
-				  <div class="login-help">
-					<a href="#">Register</a> - <a href="#">Forgot Password</a>
-				  </div>
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true"
+	style="display: none;">
+	<div class="modal-dialog">
+		<div class="loginmodal-container">
+			<h1>Login to Your Account</h1>
+			<br>
+			<form role="form" method="POST" id="login-form"
+				onsubmit="login.submitCreateForm(this); return false;">
+				<div class="form-group">
+					<input type="email" name="email" placeholder="Email">
+					<input type="password" name="password" placeholder="Password">
 				</div>
+			</form>
+			<div class="modal-footer" style="clear: both">
+				<strong class="text-danger" style="display: none" id="create-fail"></strong>
+					<button type="button" class="btn btn-primary" onclick="$('#login-form').submit()">Login</button>
 			</div>
-		  </div>
+			<div class="login-help">
+				<a href="#">Register</a> - <a href="#">Forgot Password</a>
+			</div>
+		</div>
+	</div>
+</div>

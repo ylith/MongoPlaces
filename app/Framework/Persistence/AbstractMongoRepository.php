@@ -34,33 +34,39 @@ abstract class AbstractMongoRepository
 		$this->dbName = $this->adapter->getDbName();
 		$this->dbHost= $this->adapter->getDbHost();
 		$this->collectionName = (isset($options['collectionName']) ? $options['collectionName'] : '');
-		$this->collectionObject = $this->adapter->getMongo()->{$this->dbName}->{$this->collectionName};
-		$this->dbObject = $this->adapter->getMongo()->selectDB($this->dbName);
+		
+		//doesn't work anymore with the new driver
+// 		$this->collectionObject = $this->adapter->getMongo()->{$this->dbName}->{$this->collectionName};
+// 		$this->dbObject = $this->adapter->getMongo()->selectDB($this->dbName);
+	}
+	
+	public function getDbNamespace()
+	{
+		return $this->dbName . '.' . $this->collectionName;
 	}
 
 	/**
 	* @param array $conditions
 	 * @return \MongoCursor
 	 */
-	public function findBy(array $conditions = array(), array $columns = array())
+	public function findBy(array $conditions = array(), array $options = array(), $asCursor = false)
 	{
-		$cursor = $this->collectionObject->find($conditions, $columns);
-		return $cursor;
+		$manager = $this->adapter->getMongo();
+		$query = new \MongoDB\Driver\Query($conditions, $options);
+		$cursor = $manager->executeQuery($this->getDbNamespace(), $query);
+
+		return $asCursor ? $cursor : iterator_to_array($cursor);
 	}
 
 	/**
 	* @param array $conditions
 	 * @return \MongoCursor
 	 */
-	public function findOneBy(array $conditions = array(), array $columns = array())
+	public function findOneBy(array $conditions = array(), array $options = array(), $asCursor = false)
 	{
-		$cursor = $this->collectionObject->findOne($conditions, $columns);
-		return $cursor;
-	}
-
-	public function execute(\MongoCode $code, $params)
-	{
-		return $this->adapter->getMongo()->selectDB($this->dbName)->execute($code, $params);
+		$options['limit'] = 1;
+		
+		return $this->findBy($conditions, $options, $asCursor);
 	}
 
 	/** Insert element in current collection
@@ -69,7 +75,11 @@ abstract class AbstractMongoRepository
 	 */
 	public function insertElement(array $params)
 	{
-		return $this->collectionObject->insert($params);
+		$manager = $this->adapter->getMongo();
+		$bulk = new \MongoDB\Driver\BulkWrite();
+		$bulk->insert($params);
+
+		$result = $manager->executeBulkWrite($this->getDbNamespace(), $bulk);
 	}
 
 	/** Insert element in current collection

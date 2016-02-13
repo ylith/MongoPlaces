@@ -16,5 +16,6 @@ Routes::any('login', 'doLogin', 'Home@login');
 Routes::any('logout', 'doLogout', 'Home@logout');
 
 //Map
+Routes::any('map', 'readMap', 'Map@index');
 Routes::any('addNewObject', 'newObject', 'Map@create');
 Routes::any('editObject', 'editObject', 'Map@edit');
