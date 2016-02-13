@@ -11,9 +11,9 @@ use Framework\Routing\Routes;
 Routes::get('/', 'home', 'Home@index');
 
 //User
-Routes::any('register', 'doRegistration', 'Home@doRegistration');
-Routes::any('login', 'doLogin', 'Home@login');
-Routes::any('logout', 'doLogout', 'Home@logout');
+Routes::any('register', 'doRegistration', 'System@doRegistration');
+Routes::any('login', 'doLogin', 'System@login');
+Routes::any('logout', 'doLogout', 'System@logout');
 
 //Map
 Routes::any('map', 'readMap', 'Map@index');

@@ -2,22 +2,40 @@
 	aria-labelledby="myModalLabel" aria-hidden="true"
 	style="display: none;">
 	<div class="modal-dialog">
-		<div class="loginmodal-container">
+		<div class="loginmodal-container active" id="login-form-container">
 			<h1>Login to Your Account</h1>
 			<br>
-			<form role="form" method="POST" id="login-form"
-				onsubmit="login.submitCreateForm(this); return false;">
-				<div class="form-group">
-					<input type="email" name="email" placeholder="Email">
-					<input type="password" name="password" placeholder="Password">
-				</div>
+			<form id="login-form" method="post" onsubmit="login.submitCreateForm(this); return false;">
+				<input type="email" name="email" placeholder="Email">
+				<input type="password" name="password" placeholder="Password">
 			</form>
 			<div class="modal-footer" style="clear: both">
-				<strong class="text-danger" style="display: none" id="create-fail"></strong>
-					<button type="button" class="btn btn-primary" onclick="$('#login-form').submit()">Login</button>
+				<div class="center-block text-center">
+					<button type="button" class="btn-lg btn-primary center-block"
+						onclick="$('#login-form').submit()">Login</button>
+				</div>
 			</div>
+
 			<div class="login-help">
-				<a href="#">Register</a> - <a href="#">Forgot Password</a>
+				<a href="javascript:void(0);" id="register-form-link">Register</a>
+			</div>
+		</div>
+		<div class="loginmodal-container" id="register-form-container" style="display:none;">
+			<h1>Create Account</h1>
+			<br>
+			<form id="register-form" method="post" onsubmit="register.submitCreateForm(this); return false;">
+				<input type="email" name="email" placeholder="Email">
+				<input type="password" name="password" placeholder="Password">
+				<input type="password" name="password2" placeholder="Repeat Password">
+			</form>
+			<div class="login-help">
+				Already have an account? <a href="javascript:void(0);" id="login-form-link">Login</a>
+			</div>
+			<div class="modal-footer" style="clear: both">
+				<div class="center-block text-center">
+					<button type="button" class="btn-lg btn-success center-block"
+						onclick="$('#register-form').submit()">Register</button>
+				</div>
 			</div>
 		</div>
 	</div>

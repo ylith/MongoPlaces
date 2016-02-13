@@ -2,11 +2,13 @@
 namespace Controller;
 
 use Framework\Factory\ServiceFactory;
-use Framework\Controller\AbstractController;
-use Framework\Support\View;
 use Framework\Support\Input;
+use Lib\AppConstant;
+use Framework\Controller\AbstractAjaxController;
+use Framework\Routing\Url;
+use Framework\Http\Response;
 
-class SystemController extends AbstractController
+class SystemController extends AbstractAjaxController
 {
 	public function login()
 	{
@@ -18,14 +20,30 @@ class SystemController extends AbstractController
 	
 	public function logout()
 	{
-		return ServiceFactory::create('login')->logout();
+		ServiceFactory::create('login')->logout();
+
+		Response::getInstance()->redirect(Url::generate('home'));
 	}
 	
 	public function doRegistration()
 	{
 		$email = Input::post('email');
 		$password = Input::post('password');
+		$password2 = Input::post('password2');
+		$service = ServiceFactory::create('Register');
+		
+		if ($password != $password2) {
+			return array(
+				'code' => AppConstant::STATUS_WAIT,
+				'message' => 'Passwords do not match',
+			);
+		}
 	
-		return ServiceFactory::create('Register')->register($email, $password);
+		$result = $service->register($email, $password);
+		if ($result['status'] == AppConstant::STATUS_DONE) {
+			return ServiceFactory::create('login')->authenticateUser($email, $password);
+		}
+
+		return $result;
 	}
 }

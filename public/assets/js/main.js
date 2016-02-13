@@ -4,7 +4,7 @@ function initMap() {
 			lat : -34.397,
 			lng : 150.644
 		},
-		zoom : 6
+		zoom : 15
 	});
 	var currentMarker;
 	var infoWindow = new google.maps.InfoWindow({
@@ -29,7 +29,7 @@ function initMap() {
 			};
 
 			infoWindow.setPosition(pos);
-			infoWindow.setContent('Location found.');
+			infoWindow.setContent('You are here!');
 			map.setCenter(pos);
 		}, function() {
 			handleLocationError(true, infoWindow, map.getCenter());
@@ -141,11 +141,35 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 					: 'Error: Your browser doesn\'t support geolocation.');
 }
 
+function setMessage(data) {
+	var messageElement = $("#status-message");
+	var result = data.result;
+	try {
+		messageElement.show();
+		if (result.status == 1) {
+			messageElement.attr('class', 'alert alert-success');
+		} else if (result.status == 2) {
+			messageElement.attr('class', 'alert alert-danger');
+		} else if (result.status == 3) {
+			messageElement.attr('class', 'alert alert-warning');
+		} else if (result.status == 4) {
+			messageElement.attr('class', 'alert alert-info');
+		}
+	} catch (e) {
+		messageElement.attr('class', 'alert alert-danger');
+	}
+	messageElement.find("strong").html(result.message);
+	messageElement.fadeTo(2000, 500).slideUp(500, function() {
+		messageElement.hide();
+	});
+}
+
 function submitForm(form, url, callback, type, error) {
 	type = type || 'POST';
 	error = error || function(xhr, ajaxOptions, thrownError) {
 		console.log(xhr.status + thrownError + xhr.responseText);
 	}
+	callback = callback || setMessage;
 
 	$.ajax({
 		type : type,
@@ -159,53 +183,28 @@ function submitForm(form, url, callback, type, error) {
 
 mapObject = {
 	submitCreateForm : function(form) {
-		submitForm(form, 'addNewObject', function(data) {
-			try {
-				data = JSON.parse(data);
-				if (data.result == 1) {
-					$("#create-fail").hide();
-					$("#create-success").show();
-					$('#login-modal').modal('hide');
-					setTimeout(function() {
-						$("#create-success").fadeOut(1000);
-					}, 2000);
-				} else if (data.result == 2) {
-					$("#create-success").hide();
-					$("#create-fail").html(data.message);
-					$("#create-fail").fadeIn();
-				}
-			} catch (e) {
-				$("#create-success").hide();
-				$("#create-fail").html('An error occured.');
-				$("#create-fail").show();
-				console.log(data);
-			}
-		});
+		submitForm(form, 'addNewObject');
 	}
 };
 
 login = {
 	submitCreateForm : function(form) {
+		submitForm(form, 'login', function(data) {
+			setMessage(data);
+			if (data.result.status == 1) {
+				console.log(213123);
+				location.reload();
+			}
+		});
+	}
+};
+
+register = {
+	submitCreateForm : function(form) {
 		submitForm(form, 'register', function(data) {
-			try {
-				data = JSON.parse(data);
-				if (data.result == 1) {
-					$("#create-fail").hide();
-					$("#create-success").show();
-					$('#login-modal').modal('hide');
-					setTimeout(function() {
-						$("#create-success").fadeOut(1000);
-					}, 2000);
-				} else if (data.result == 2) {
-					$("#create-success").hide();
-					$("#create-fail").html(data.message);
-					$("#create-fail").fadeIn();
-				}
-			} catch (e) {
-				$("#create-success").hide();
-				$("#create-fail").html('An error occured.');
-				$("#create-fail").show();
-				console.log(data);
+			setMessage(data);
+			if (data.result.status == 1) {
+				location.reload();
 			}
 		});
 	}
@@ -213,4 +212,18 @@ login = {
 
 $(document).ready(function() {
 	initMap();
+
+	$('#login-form-link').click(function(e) {
+		$("#login-form-container").delay(100).fadeIn(100);
+		$("#register-form-container").fadeOut(100);
+		$('#register-form-link').removeClass('active');
+		e.preventDefault();
+	});
+	$('#register-form-link').click(function(e) {
+		$("#register-form-container").delay(100).fadeIn(100);
+		$("#login-form-container").fadeOut(100);
+		$('#login-form-link').removeClass('active');
+		e.preventDefault();
+	});
+	$('[data-toggle="tooltip"]').tooltip();
 });

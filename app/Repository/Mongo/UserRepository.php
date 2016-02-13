@@ -12,9 +12,11 @@ class UserRepository extends AbstractMongoRepository
 		);
 	}
 	
-	public function userExists(array $params)
+	public function userExists($email)
 	{
-		return $this->findBy($params);
+		return $this->findBy(array(
+			'email' => $email,
+		));
 	}
 
 	public function register(array $params)

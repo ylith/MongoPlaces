@@ -25,6 +25,9 @@ use Framework\Support\View;
 		<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc47RjNB3TfzRBnym7-C59ndTvxyRD664"></script>
 	</head>
 	<body>
+	<div class="alert alert-success fade in" role="alert" style="display: none" id="status-message">
+		<strong>Success</strong>
+	</div>
 		<?php echo View::partial('partial._userBar'); ?>
 		<?php echo View::partial('partial._login'); ?>
 	<div class="container-fluid">

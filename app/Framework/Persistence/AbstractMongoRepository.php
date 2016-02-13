@@ -55,7 +55,7 @@ abstract class AbstractMongoRepository
 		$query = new \MongoDB\Driver\Query($conditions, $options);
 		$cursor = $manager->executeQuery($this->getDbNamespace(), $query);
 
-		return $asCursor ? $cursor : iterator_to_array($cursor);
+		return $asCursor ? $cursor : $cursor->toArray();
 	}
 
 	/**
@@ -80,6 +80,8 @@ abstract class AbstractMongoRepository
 		$bulk->insert($params);
 
 		$result = $manager->executeBulkWrite($this->getDbNamespace(), $bulk);
+		
+		return $result;
 	}
 
 	/** Insert element in current collection
