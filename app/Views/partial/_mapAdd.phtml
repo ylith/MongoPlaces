@@ -1,19 +1,102 @@
-<div class="addObject-container hidden" id="addObject-container">
+<div class="addObject-container" id="addObject-container"
+	style="background-color: #fff; max-width: 30%;">
 	<h3>Add new point of interest</h3>
 	<br>
-	<form role="form" method="POST" id="addObject-form"
+	<form class="form-horizontal" role="form" method="POST"
+		id="addObject-form"
 		onsubmit="mapObject.submitCreateForm(this); return false;">
 		<div class="form-group">
-			<label for="name" class="col-sm-4 control-label">Name </label>
-    		<div class="col-sm-8">
-			<input type="text" class="form-control" name="name"/>
+			<label for="name" class="col-sm-4 control-label">Name: </label>
+			<div class="col-sm-8">
+				<input type="text" class="form-control" name="name" />
 			</div>
 		</div>
-		</br>
+		<br>
 		<div class="form-group">
-			<label for="description" class="col-sm-4 control-label">Description </label>
-    		<div class="col-sm-8">
-			<input type="text" class="form-control" name="description"/>
+			<label for="description" class="col-sm-4 control-label">Description:
+			</label>
+			<div class="col-sm-8">
+				<textarea rows="3" class="form-control" name="description"></textarea>
+			</div>
+		</div>
+		<hr>
+		<div class="form-group">
+			<label for="type" class="col-sm-4 control-label fleft">Type: </label>
+			<div class="well">
+				<div class="btn-group" data-toggle="buttons">
+					<div class="btn">
+						<div class="sprite restaurant active" data-toggle="tooltip"
+							title="Food">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off" checked> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite grocery" data-toggle="tooltip" title="Store">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite lodging-2" data-toggle="tooltip" title="Hotel">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite university" data-toggle="tooltip"
+							title="Education">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite theater" data-toggle="tooltip" title="Culture">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite stadium" data-toggle="tooltip" title="Sports">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite busstop" data-toggle="tooltip"
+							title="Public Transport">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite administration" data-toggle="tooltip"
+							title="Administration">
+							<input type="radio" class="hidden" name="type" value="1"
+								autocomplete="off"> <span class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+					<div class="btn">
+						<div class="sprite tree" data-toggle="tooltip" title="Nature">
+							<input type="radio" name="type" value="1" data-toggle="tooltip"
+								title="restaurant" autocomplete="off" checked> <span
+								class="glyphicon glyphicon-ok"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<br>
+		<div class="form-group">
+			<label for="priceRange" class="col-sm-4 control-label">Price Range: </label>
+			<div class="col-sm-4">
+				<input type="number" class="form-control" name="priceRange[min]"
+					value="0" />
+			</div>
+			<div class="col-sm-4">
+				<input type="number" class="form-control" name="priceRange[max]"
+					value="0" />
 			</div>
 		</div>
 	</form>

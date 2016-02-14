@@ -409,6 +409,15 @@ function castNumeric($value)
 	return $value;
 }
 
+function castNumericInPlace(&$value)
+{
+	if (is_numeric($value)) {
+		$value = $value + 0;
+	}
+
+	return $value;
+}
+
 /**
  * Check if number is odd
  *

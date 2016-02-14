@@ -22,6 +22,13 @@ html, body {
 	float: right;
 }
 
+.white {
+	color: #fff;
+}
+.white {
+	color: #fff;
+}
+
 /****** LOGIN MODAL ******/
 .loginmodal-container {
 	padding: 30px;
@@ -68,7 +75,7 @@ html, body {
 .loginmodal-container a {
 	text-decoration: none;
 	font-weight: 400;
-	font-size: 16px; text-align : center;
+	text-align : center;
 	display: inline-block;
 	opacity: 0.6;
 	transition: opacity ease 0.5s;
@@ -76,9 +83,10 @@ html, body {
 }
 
 .login-help {
-	font-size: 12px;
+	font-size: 14px;
 }
 
+/****** TOAST MESSAGE ******/
 #status-message {
 	display: inline-block;
 	vertical-align: top;
@@ -91,3 +99,24 @@ html, body {
 	border-width: medium;
 	font-weight: bold;
 }
+
+/****** CUSTOM RADIO BUTTONS ******/
+
+.btn span.glyphicon {    
+    color: #000;
+    text-shadow: 1px -1px #fff;
+	opacity: 0;				
+}
+.btn.active span.glyphicon {				
+	opacity: 1;				
+}
+.sprite { background: url('../images/type_sprite.png') no-repeat top left; width: 32px; height: 37px;  } 
+.sprite.administration { background-position: 0 0; } 
+.sprite.busstop { background-position: -42px 0; } 
+.sprite.grocery { background-position: -84px 0; } 
+.sprite.lodging-2 { background-position: -126px 0; } 
+.sprite.restaurant { background-position: -168px 0; } 
+.sprite.stadium { background-position: -210px 0; } 
+.sprite.theater { background-position: -252px 0; } 
+.sprite.tree { background-position: -294px 0; } 
+.sprite.university { background-position: -336px 0; }

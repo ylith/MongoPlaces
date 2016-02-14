@@ -8,6 +8,7 @@ class HomeController extends AbstractController
 {	
 	public function index()
 	{
+		highlightNav('home');
 		return View::make('home.index', array(
 			'hasLoggedIn' => hasLoggedIn()
 		));

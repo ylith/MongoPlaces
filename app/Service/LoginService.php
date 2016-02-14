@@ -31,6 +31,7 @@ class LoginService extends AbstractService
 		} else {
 			Session::getInstance()->set('user', array(
 				'email' => $email,
+				'id' => (string)$user->_id,
 			));
 		}
 		

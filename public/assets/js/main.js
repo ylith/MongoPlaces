@@ -1,3 +1,5 @@
+var currentInfoWindow;
+var currentMarker;
 function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 		center : {
@@ -6,10 +8,10 @@ function initMap() {
 		},
 		zoom : 15
 	});
-	var currentMarker;
-	var infoWindow = new google.maps.InfoWindow({
+	currentInfoWindow = new google.maps.InfoWindow({
 		map : map
 	});
+
 	var pointsOfInterest = {};
 	$.ajax({
 		type : 'GET',
@@ -28,15 +30,15 @@ function initMap() {
 				lng : position.coords.longitude
 			};
 
-			infoWindow.setPosition(pos);
-			infoWindow.setContent('You are here!');
+			currentInfoWindow.setPosition(pos);
+			currentInfoWindow.setContent('You are here!');
 			map.setCenter(pos);
 		}, function() {
-			handleLocationError(true, infoWindow, map.getCenter());
+			handleLocationError(true, currentInfoWindow, map.getCenter());
 		});
 	} else {
 		// Browser doesn't support Geolocation
-		handleLocationError(false, infoWindow, map.getCenter());
+		handleLocationError(false, currentInfoWindow, map.getCenter());
 	}
 
 	google.maps.event
@@ -45,31 +47,9 @@ function initMap() {
 					'click',
 					function(e) {
 						if (currentMarker) {
+							currentMarker
+									.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 							currentMarker.setPosition(e.latLng);
-							var html = '<div class="addObject-container" id="addObject-container">'
-									+ '<h3>Add new point of interest</h3><br>'
-									+ '<form role="form" method="POST" id="addObject-form" onsubmit="mapObject.submitCreateForm(this); return false;">'
-									+ '<div class="form-group">'
-									+ '<label for="name" class="col-sm-4 control-label">Name </label>'
-									+ '<div class="col-sm-8">'
-									+ '<input type="text" class="form-control" name="name"/>'
-									+ '</div>'
-									+ '</div>'
-									+ '</br>'
-									+ '<div class="form-group">'
-									+ '<label for="description" class="col-sm-4 control-label">Description </label>'
-									+ '<div class="col-sm-8">'
-									+ '<input type="text" class="form-control" name="description"/>'
-									+ '<input type="hidden" class="form-control" name="lat" value="'
-									+ currentMarker.getPosition().lat()
-									+ '"/>'
-									+ '<input type="hidden" class="form-control" name="lng" value="'
-									+ currentMarker.getPosition().lng()
-									+ '"/>'
-									+ '</div></div></form><hr>'
-									+ '<button type="button" class="btn btn-primary" onclick="$(\'#addObject-form\').submit()">Save</button></div>';
-							infoWindow.setContent(html);
-							infoWindow.open(map, currentMarker);
 						} else {
 							currentMarker = new google.maps.Marker(
 									{
@@ -79,64 +59,161 @@ function initMap() {
 										title : 'cmon',
 										icon : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 									});
-							var html = '<div class="addObject-container" id="addObject-container">'
-									+ '<h3>Add new point of interest</h3><br>'
-									+ '<form role="form" method="POST" id="addObject-form" onsubmit="mapObject.submitCreateForm(this); return false;">'
-									+ '<div class="form-group">'
-									+ '<label for="name" class="col-sm-4 control-label">Name </label>'
-									+ '<div class="col-sm-8">'
-									+ '<input type="text" class="form-control" name="name"/>'
-									+ '</div>'
-									+ '</div>'
-									+ '</br>'
-									+ '<div class="form-group">'
-									+ '<label for="description" class="col-sm-4 control-label">Description </label>'
-									+ '<div class="col-sm-8">'
-									+ '<input type="text" class="form-control" name="description"/>'
-									+ '<input type="hidden" class="form-control" name="lat" value="'
-									+ currentMarker.getPosition().lat()
-									+ '"/>'
-									+ '<input type="hidden" class="form-control" name="lng" value="'
-									+ currentMarker.getPosition().lng()
-									+ '"/>'
-									+ '</div></div></form><hr>'
-									+ '<button type="button" class="btn btn-primary" onclick="$(\'#addObject-form\').submit()">Save</button></div>';
-							infoWindow.setContent(html);
-							infoWindow.open(map, currentMarker);
 						}
+						var html = "";
+						html += "<div class=\"addObject-container\" id=\"addObject-container\">";
+						html += "	<h3>Add new point of interest<\/h3>";
+						html += "	<br>";
+						html += "	<form class=\"form-horizontal\" role=\"form\" method=\"POST\"";
+						html += "		id=\"addObject-form\"";
+						html += "		onsubmit=\"mapObject.submitCreateForm(this); return false;\">";
+						html += "		<div class=\"form-group\">";
+						html += "			<label for=\"name\" class=\"col-sm-4 control-label\">Name: <\/label>";
+						html += "			<div class=\"col-sm-8\">";
+						html += "				<input type=\"text\" class=\"form-control\" name=\"name\" required\/>";
+						html += "			<\/div>";
+						html += "		<\/div>";
+						html += "		<br>";
+						html += "		<div class=\"form-group\">";
+						html += "			<label for=\"description\" class=\"col-sm-4 control-label\">Description:";
+						html += "			<\/label>";
+						html += "			<div class=\"col-sm-8\">";
+						html += "				<textarea rows=\"3\" class=\"form-control\" name=\"description\"><\/textarea>";
+						html += "			<\/div>";
+						html += "		<\/div>";
+						html += "		<hr>";
+						html += "		<div class=\"form-group\">";
+						html += "			<label for=\"type\" class=\"col-sm-4 control-label fleft\">Type: <\/label>";
+						html += "			<div class=\"well\">";
+						html += "				<div class=\"btn-group\" data-toggle=\"buttons\">";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite restaurant active\" data-toggle=\"tooltip\"";
+						html += "							title=\"Food\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"1\"";
+						html += "								autocomplete=\"off\" checked> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite grocery\" data-toggle=\"tooltip\" title=\"Store\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"2\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite lodging-2\" data-toggle=\"tooltip\" title=\"Hotel\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"3\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite university\" data-toggle=\"tooltip\"";
+						html += "							title=\"Education\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"4\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite theater\" data-toggle=\"tooltip\" title=\"Culture\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"5\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite stadium\" data-toggle=\"tooltip\" title=\"Sports\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"6\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite busstop\" data-toggle=\"tooltip\"";
+						html += "							title=\"Public Transport\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"7\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite administration\" data-toggle=\"tooltip\"";
+						html += "							title=\"Administration\">";
+						html += "							<input type=\"radio\" class=\"hidden\" name=\"type\" value=\"8\"";
+						html += "								autocomplete=\"off\"> <span class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "					<div class=\"btn\">";
+						html += "						<div class=\"sprite tree\" data-toggle=\"tooltip\" title=\"Nature\">";
+						html += "							<input type=\"radio\" name=\"type\" value=\"9\" data-toggle=\"tooltip\"";
+						html += "								title=\"restaurant\" autocomplete=\"off\" checked> <span";
+						html += "								class=\"glyphicon glyphicon-ok\"><\/span>";
+						html += "						<\/div>";
+						html += "					<\/div>";
+						html += "				<\/div>";
+						html += "			<\/div>";
+						html += "		<\/div>";
+						html += "		<hr>";
+						html += "		<br>";
+						html += "		<div class=\"form-group\">";
+						html += "			<label for=\"priceRange\" class=\"col-sm-4 control-label\">Price Range: <\/label>";
+						html += "			<div class=\"col-sm-4\">";
+						html += "				<input type=\"number\" class=\"form-control\" name=\"priceRange[min]\"";
+						html += "					value=\"0\" \/>";
+						html += "			<\/div>";
+						html += "			<div class=\"col-sm-4\">";
+						html += "				<input type=\"number\" class=\"form-control\" name=\"priceRange[max]\"";
+						html += "					value=\"0\" \/>";
+						html += "			<\/div>";
+						html += "		<\/div>"
+								+ '<input type="hidden" class="form-control" name="lat" value="'
+								+ currentMarker.getPosition().lat()
+								+ '"/>'
+								+ '<input type="hidden" class="form-control" name="lng" value="'
+								+ currentMarker.getPosition().lng() + '"/>';
+						html += "	<\/form>";
+						html += "	<hr>";
+						html += "	<button type=\"button\" class=\"btn btn-primary\"";
+						html += "		onclick=\"$('#addObject-form').submit()\">Save<\/button>";
+						html += "<\/div>"
+						currentInfoWindow.setContent(html);
+						currentInfoWindow.open(map, currentMarker);
 						google.maps.event.addListener(currentMarker, "click",
 								function() {
-									infoWindow.open(map, currentMarker);
-									infoWindow.setContent(currentMarker.title);
+									currentInfoWindow.open(map, currentMarker);
+									currentInfoWindow
+											.setContent(currentMarker.title);
 								});
 					});
 }
 
 function renderMarkers(markers, map) {
 	if (markers) {
-		$.each(markers, function(index, m) {
-			var latlng = new google.maps.LatLng(m.location.coordinates[0],
-					m.location.coordinates[1]);
-			var marker = new google.maps.Marker({
-				position : latlng,
-				map : map,
-				title : m.name,
-				icon : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-			});
-			marker.info = new google.maps.InfoWindow({
-				map : map,
-				content : marker.title
-			});
-			google.maps.event.addListener(marker, "click", function() {
-				marker.info.open(map, marker);
-			});
-		});
+		$
+				.each(
+						markers,
+						function(index, m) {
+							var latlng = new google.maps.LatLng(
+									m.location.coordinates[0],
+									m.location.coordinates[1]);
+							var marker = new google.maps.Marker(
+									{
+										position : latlng,
+										map : map,
+										title : m.name,
+										icon : m.image
+												|| 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+									});
+							marker.info = new google.maps.InfoWindow({
+								content : marker.title,
+								position : marker.position
+							});
+							google.maps.event.addListener(marker, "click",
+									function() {
+										marker.info.open(map, marker);
+									});
+						});
 	}
 }
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-	infoWindow.setPosition(pos);
-	infoWindow
+function handleLocationError(browserHasGeolocation, currentInfoWindow, pos) {
+	currentInfoWindow.setPosition(pos);
+	currentInfoWindow
 			.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.'
 					: 'Error: Your browser doesn\'t support geolocation.');
 }
@@ -183,7 +260,19 @@ function submitForm(form, url, callback, type, error) {
 
 mapObject = {
 	submitCreateForm : function(form) {
-		submitForm(form, 'addNewObject');
+		submitForm(
+				form,
+				'addNewObject',
+				function(data) {
+					setMessage(data);
+					if (data.result.status == 1) {
+						currentInfoWindow.close();
+						currentMarker.setAnimation();
+						currentMarker
+								.setIcon(data.result.element.image
+										|| 'http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+					}
+				});
 	}
 };
 
@@ -192,7 +281,6 @@ login = {
 		submitForm(form, 'login', function(data) {
 			setMessage(data);
 			if (data.result.status == 1) {
-				console.log(213123);
 				location.reload();
 			}
 		});

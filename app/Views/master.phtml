@@ -1,5 +1,6 @@
 <?php
 use Framework\Support\View;
+use Framework\Http\Request;
 ?>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,7 @@ use Framework\Support\View;
 
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
 
 		<!-- JS -->
 		<!-- JQuery -->
@@ -21,7 +23,12 @@ use Framework\Support\View;
 		
 		<!-- Bootstrap -->
 		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+		
+		<!-- Main js -->
 		<script src="assets/js/main.js"></script>
+		
+		<!-- Google Maps API -->
 		<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc47RjNB3TfzRBnym7-C59ndTvxyRD664"></script>
 	</head>
 	<body>
@@ -34,4 +41,5 @@ use Framework\Support\View;
 		<div id="map"></div>
 	</div>
 </body>
+	<script> <?php echo Request::getInstance()->getParam('activeNav', '') ?> </script>
 </html>

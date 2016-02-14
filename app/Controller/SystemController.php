@@ -34,7 +34,7 @@ class SystemController extends AbstractAjaxController
 		
 		if ($password != $password2) {
 			return array(
-				'code' => AppConstant::STATUS_WAIT,
+				'status' => AppConstant::STATUS_WAIT,
 				'message' => 'Passwords do not match',
 			);
 		}
