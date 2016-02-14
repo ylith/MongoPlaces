@@ -3,7 +3,6 @@ namespace Service;
 use Framework\Service\AbstractService;
 use Framework\Factory\RepositoryFactory;
 use Lib\AppConstant;
-use Framework\Support\Session;
 
 class MapService extends AbstractService
 {
@@ -23,15 +22,16 @@ class MapService extends AbstractService
 		9 => 'assets/images/tree.png',
 	);
 	
-	public function readMap()
+	public function readMap(array $params = array(), $options = array())
 	{
-		$points = RepositoryFactory::create('map')->findBy();
+		$points = RepositoryFactory::create('map')->findBy($params, $options);
 		
 		foreach ($points as $key => $point) {
 			if (isset($point->type) && isset(self::$typeToImage[$point->type])) {
 				$point->image = self::$typeToImage[$point->type];
 				$points[$key] = $point;
 			}
+			$points[$key]->_id = (string)$point->_id;
 		}
 		
 		return $points;
@@ -48,13 +48,14 @@ class MapService extends AbstractService
 			);
 		}
 		
-		if (empty($params['name'])) {
+		if (empty($params['name']) || empty($params['type'])) {
 			return array(
 				'status' => AppConstant::STATUS_ERROR,
-				'message' => 'Cannot add point of interest without a name!',
+				'message' => 'Cannot add point of interest without a name or type!',
 			);
 		}
 		array_walk_recursive($params, 'castNumericInPlace');
+
 		$params['location'] = array(
 			'type' => 'Point',
 			'coordinates' => array(
@@ -62,6 +63,21 @@ class MapService extends AbstractService
 				$params['lng'],
 			),
 		);
+		
+		if ((isset($params['opened']['from']) && $params['opened']['from'] != '') ||
+				(isset($params['opened']['until']) && $params['opened']['until'] != '')) {
+			$from = isset($params['opened']['from']) ? max(min(castNumeric($params['opened']['from']), 23.59), 0) : 0;
+			$until = isset($params['opened']['until']) ? max(min(castNumeric($params['opened']['until']), 23.59), 0) : 0;
+			$params['opened']['from'] = min($from, $until);
+			$params['opened']['until'] = $until;
+		} else {
+			unset($params['opened']);
+		}
+		
+		if ((isset($params['priceRange']['min']) && $params['priceRange']['min'] == '') ||
+				(isset($params['priceRange']['max']) && $params['priceRange']['max'] == '')) {
+			unset($params['priceRange']);
+		}
 		
 		unset($params['lat'], $params['lng']);
 		
@@ -89,7 +105,7 @@ class MapService extends AbstractService
 			'location' => 
 		       array('$near' =>
 		          array(
-		            '$geometry' =>  array('type' => "Point",  'coordinates' => array($x, $y)),
+		            '$geometry' =>  array('type' => "Point", 'coordinates' => array($x, $y)),
 		            '$minDistance' => self::MIN_DISTANCE,
 		            '$maxDistance' => self::MAX_DISTANCE,
 		          ),
@@ -97,5 +113,44 @@ class MapService extends AbstractService
 		), array(
 			 'limit' => $limit,
 		));
+	}
+	
+	public function getObject($id)
+	{
+		return RepositoryFactory::create('map')->findBy(array(
+			'_id' => new \MongoDB\BSON\ObjectID($id),
+		));
+	}
+	
+	public function getFavourites()
+	{
+		$result = array();
+		$favourites = current(RepositoryFactory::create('user')->findBy(array(
+			'_id' => new \MongoDB\BSON\ObjectID(getUserId()),
+		)));
+		$repo = RepositoryFactory::create('map');
+		
+		if (! isset($favourites->favourites) || empty($favourites->favourites)) {
+			return $result;
+		}
+		$favs = array_filter($favourites->favourites);
+		
+		foreach ($favs as $fav) {
+			$result[]= current($repo->findBy(array(
+				'_id' => new \MongoDB\BSON\ObjectID($fav),
+			)));
+		}
+		
+		return $result;
+	}
+	
+	public function myPlaces()
+	{
+		$places = RepositoryFactory::create('map')->findBy(array(
+			'addedBy.$id' => getUserId(),
+		), array('limit' => 50));
+		$repo = RepositoryFactory::create('map');
+		
+		return $places;
 	}
 }

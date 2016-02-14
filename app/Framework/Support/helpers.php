@@ -418,6 +418,7 @@ function castNumericInPlace(&$value)
 	return $value;
 }
 
+
 /**
  * Check if number is odd
  *

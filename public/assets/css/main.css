@@ -120,3 +120,21 @@ html, body {
 .sprite.theater { background-position: -252px 0; } 
 .sprite.tree { background-position: -294px 0; } 
 .sprite.university { background-position: -336px 0; }
+
+
+/****** CUSTOM INFOWINDOW ******/
+.gm-style-iw .custom-iw {
+    max-width: 650px !important;
+    top: 15px !important;
+    left: 0px !important;
+    background-color: #fff;
+}
+.iw-title {
+	font-size: 16px;
+	font-weight: bold;
+    background-color: aliceblue;
+}
+.iw-subTitle {
+	font-size: 14px;
+	font-weight: bold;
+}

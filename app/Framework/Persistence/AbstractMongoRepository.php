@@ -88,6 +88,21 @@ abstract class AbstractMongoRepository
 	 *
 	 * @param array $params
 	 */
+	public function update(array $params, $new)
+	{
+		$manager = $this->adapter->getMongo();
+		$bulk = new \MongoDB\Driver\BulkWrite();
+		$bulk->update($params, $new);
+
+		$result = $manager->executeBulkWrite($this->getDbNamespace(), $bulk);
+		
+		return $result;
+	}
+
+	/** Insert element in current collection
+	 *
+	 * @param array $params
+	 */
 	public function distinct($key, array $params)
 	{
 		return $this->collectionObject->distinct($key, $params);
