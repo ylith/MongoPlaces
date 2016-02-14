@@ -463,6 +463,7 @@ mapObject = {
 						});
 						currentInfoWindow.setContent();
 						addMarkerInfo(data.result.element, currentInfoWindow);
+						location.reload();
 					}
 				});
 	}
