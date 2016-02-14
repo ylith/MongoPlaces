@@ -1,0 +1,3 @@
+{"_id":{"$oid":"56bfa2020963c61338004c1d"},"email":"igritte@abv.bg","password":"$2y$10$tW.Na3YdJdxHnKv9OlzRyuy1NOUaBRDbdzkhc5X3tehqea5/OhI7q","favourites":[null,"56bff1370963c61338004c3f"]}
+{"_id":{"$oid":"56bfd2b80963c61338004c25"},"email":"stridtul@abv.bg","password":"$2y$10$WfeBJ31je.NEmMlYx4GtY.WZ5I2Eq6ez8/9Tq3C40q921bcnss7Im"}
+{"_id":{"$oid":"56c00f470963c62804001101"},"email":"stridtul2@abv.bg","password":"$2y$10$wSkqY0yhyALaKy6FO9wlLu0bvCw5EYAdAUnqDBPjCGNoZMy2lSTs."}

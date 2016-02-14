@@ -1,0 +1,66 @@
+<?php
+use Framework\Support\View;
+use Framework\Http\Request;
+use Service\MapService;
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=yes" />
+
+		<link rel="shortcut icon" href="favicon.ico" type="image/png" />
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+		<!-- JS -->
+		<!-- JQuery -->
+		<script src="https://code.jquery.com/jquery.js"></script>
+		<link href="https://code.jquery.com/ui/1.11.2/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
+		<script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+		
+		<!-- Bootstrap -->
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+		
+		<!-- Google Maps API -->
+		<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc47RjNB3TfzRBnym7-C59ndTvxyRD664"></script>
+	</head>
+	<body>
+	<div class="alert alert-success fade in" role="alert" style="display: none" id="status-message">
+		<strong>Success</strong>
+	</div>
+		<?php echo View::partial('partial._userBar'); ?>
+		<?php echo View::partial('partial._login'); ?>
+		
+	<div class="container-fluid">
+	<?php if (isset($objects)) : ?>
+		  <h2>Points of Interest</h2>     
+		  <table class="table">
+		    <thead>
+		      <tr>
+		        <th>Name</th>
+		        <th>Description</th>
+		        <th>Type</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		<?php foreach ($objects as $object): ?>
+		      <tr>
+		        <td><?php echo $object->name; ?></td>
+		        <td><?php echo isset($object->description) ? $object->description : ''; ?></td>
+		        <td><img src="<?php echo MapService::$typeToImage[$object->type]; ?>"></td>
+		      </tr>
+		<?php endforeach; ?>
+		    </tbody>
+		  </table>
+	<?php else : ?>
+	<p>No points of interest yet...</p>
+	<?php endif; ?>
+	</div>
+</body>
+	<script> <?php echo Request::getInstance()->getParam('activeNav', '') ?> </script>
+</html>
