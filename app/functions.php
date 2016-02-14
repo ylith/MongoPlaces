@@ -13,8 +13,9 @@ function getUsername()
 	if (! hasLoggedIn()) {
 		return 'Guest';
 	}
+	$session = Session::getInstance()->get('user');
 	
-	return isset(Session::getInstance()->get('user')['email']) ? Session::getInstance()->get('user')['email'] : 'Guest';
+	return isset($session['email']) ? $session['email'] : 'Guest';
 }
 
 function getUserId()
@@ -22,8 +23,9 @@ function getUserId()
 	if (! hasLoggedIn()) {
 		return;
 	}
+	$session = Session::getInstance()->get('user');
 	
-	return isset(Session::getInstance()->get('user')['id']) ? Session::getInstance()->get('user')['id'] : null;
+	return isset($session['id']) ? $session['id'] : null;
 }
 
 function highlightNav($class)
